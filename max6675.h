@@ -5,22 +5,27 @@
 #define max6675_h
 
 #if ARDUINO >= 100
- #include "Arduino.h"
+#include "Arduino.h"
 #else
- #include "WProgram.h"
+#include "WProgram.h"
 #endif
 
 class MAX6675 {
- public:
-  MAX6675(int8_t SCLK, int8_t CS, int8_t MISO);
+  public:
+    MAX6675(uint8_t SCLK, uint8_t CS, uint8_t MISO);
 
-  double readCelsius(void);
-  double readFahrenheit(void);
-  // For compatibility with older versions:
-  double readFarenheit(void) { return readFahrenheit(); }
- private:
-  int8_t sclk, miso, cs;
-  uint8_t spiread(void);
+    double readCelsius(void);
+    double readFahrenheit(void);
+
+  private:
+    uint8_t spiread(void);
+
+    volatile uint8_t *csReg;
+    volatile uint8_t *sclkReg;
+    volatile uint8_t *misoReg;
+    uint8_t csBitMask;
+    uint8_t sclkBitMask;
+    uint8_t misoBitMask;
 };
 
 #endif
