@@ -2,7 +2,6 @@
 // www.ladyada.net/learn/sensors/thermocouple
 
 #ifdef __AVR
-#include <avr/pgmspace.h>
 
 //////////////////////////////////////////
 // macros from http://masteringarduino.blogspot.com.es/2013/10/fastest-and-smallest-digitalread-and.html
@@ -23,9 +22,6 @@
 #define pinAsOutput(P) *(ddrOfPin(P)) |= pinMask(P)
 #define digitalLow(P) *(portOfPin(P)) &= ~pinMask(P)
 #define digitalHigh(P) *(portOfPin(P)) |= pinMask(P)
-
-#elif defined(ESP8266)
-#include <pgmspace.h>
 #endif
 #include "max6675.h"
 
