@@ -60,7 +60,7 @@ MAX6675::MAX6675(uint8_t SCLK, uint8_t CS, uint8_t MISO) {
     // Equivalent to pinMode(MISO, INPUT);
 #ifdef __AVR
     misoBitMask = pinMask(MISO);
-    misoReg = portOfPin(MISO);
+    misoReg = pinOfPin(MISO);
     pinAsInput(MISO);
 #else
     port = digitalPinToPort(MISO);
@@ -104,9 +104,9 @@ double MAX6675::readFahrenheit(void) {
     return readCelsius() * 9.0 / 5.0 + 32;
 }
 
-byte MAX6675::spiread(void) {
+uint8_t MAX6675::spiread(void) {
     int i;
-    byte d = 0;
+    uint8_t d = 0;
 
     for (i = 7; i >= 0; i--) {
         //Toggle sclk pin assumes that sclk has HIGH value and should be equvalent to: digitalWrite(sclk, LOW);
