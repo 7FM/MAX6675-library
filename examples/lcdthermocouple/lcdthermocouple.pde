@@ -5,11 +5,10 @@
 #include <LiquidCrystal.h>
 #include <Wire.h>
 
-int thermoDO = 4;
-int thermoCS = 5;
-int thermoCLK = 6;
+#define thermoDO 4
+#define thermoCS 5
+#define thermoCLK 6
 
-MAX6675 thermocouple(thermoCLK, thermoCS, thermoDO);
 int vccPin = 3;
 int gndPin = 2;
 
@@ -23,7 +22,9 @@ void setup() {
   // use Arduino pins 
   pinMode(vccPin, OUTPUT); digitalWrite(vccPin, HIGH);
   pinMode(gndPin, OUTPUT); digitalWrite(gndPin, LOW);
-  
+
+  MAX6675<thermoCLK, thermoCS, thermoDO>::init();
+
   lcd.begin(16, 2);
   lcd.createChar(0, degree);
 
@@ -36,23 +37,23 @@ void loop() {
   lcd.clear();
   lcd.setCursor(0, 0);
   lcd.print("MAX6675 test");
-  
+
   // go to line #1
   lcd.setCursor(0,1);
-  lcd.print(thermocouple.readCelsius());
+  lcd.print(MAX6675<thermoCLK, thermoCS, thermoDO>::readCelsius());
 #if ARDUINO >= 100
   lcd.write((byte)0);
 #else
   lcd.print(0, BYTE);
 #endif
   lcd.print("C ");
-  lcd.print(thermocouple.readFahrenheit());
+  lcd.print(MAX6675<thermoCLK, thermoCS, thermoDO>::readFahrenheit());
 #if ARDUINO >= 100
   lcd.write((byte)0);
 #else
   lcd.print(0, BYTE);
 #endif
   lcd.print('F');
-  
+
   delay(1000);
 }
