@@ -18,7 +18,7 @@ class MAX6675 {
     MAX6675();
 
   public:
-    static inline void init() {
+    static inline void init() __attribute__((always_inline)) {
         FastPin<SCLK>::setOutput();
         FastPin<SCLK>::hi();
 
