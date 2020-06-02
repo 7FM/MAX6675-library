@@ -28,7 +28,11 @@ class MAX6675 {
         FastPin<MISO>::setInput();
     }
 
-    static double readCelsius() {
+#ifdef MAX6675_USE_FIX_PT
+    static uint16_t readCelsius() {
+#else
+    static float readCelsius() {
+#endif
 
         FastPin<CS>::lo();
 
@@ -37,8 +41,8 @@ class MAX6675 {
         // Read temperature via spi
         for (uint16_t i = 0x8000; i >= 0x04; i >>= 1) {
 
-        // MAX6675 is rated for 100ns delay between a signal change... 1 clock is about 62.5ns long (16MHz)
-        // if implemented as loop no need for a delay (if cpu isn't too fast executing jump, decrement/shift, comparison & register write xD)
+            // MAX6675 is rated for 100ns delay between a signal change... 1 clock is about 62.5ns long (16MHz)
+            // if implemented as loop no need for a delay (if cpu isn't too fast executing jump, decrement/shift, comparison & register write xD)
 #ifdef SAFE_DELAY
 #ifdef __AVR
             _delay_us(1);
@@ -71,18 +75,28 @@ class MAX6675 {
 
         if (v & 0x4) {
             // uh oh, no thermocouple attached!
+#ifndef MAX6675_USE_FIX_PT
             return NAN;
+#else
+            return -1;
+#endif
         }
 
         // Remove unused bits
         v >>= 3;
 
-        return v * 0.25;
+#ifndef MAX6675_USE_FIX_PT
+        return v * 0.25f;
+#else
+        return v;
+#endif
     }
 
-    static inline double readFahrenheit() {
-        return readCelsius() * 1.8 + 32;
+#ifndef MAX6675_USE_FIX_PT
+    static inline float readFahrenheit() {
+        return readCelsius() * 1.8f + 32;
     }
+#endif
 };
 
 #endif
