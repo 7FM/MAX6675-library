@@ -12,6 +12,15 @@
 
 #include <FastPin.h>
 
+#ifdef MAX6675_USE_FIX_PT
+// The upper three bits can not be set so use this as value (with compatibility for signed)
+#define NO_THERMO_VALUE 0b0110000000000000
+#define MAX6675_NO_THERMO(x) ((x) == NO_THERMO_VALUE)
+#else
+#define NO_THERMO_VALUE NAN
+#define MAX6675_NO_THERMO(x) isnan(x)
+#endif
+
 template <uint8_t SCLK, uint8_t CS, uint8_t MISO>
 class MAX6675 {
   private:
@@ -75,11 +84,7 @@ class MAX6675 {
 
         if (v & 0x4) {
             // uh oh, no thermocouple attached!
-#ifndef MAX6675_USE_FIX_PT
-            return NAN;
-#else
-            return -1;
-#endif
+            return NO_THERMO_VALUE;
         }
 
         // Remove unused bits
