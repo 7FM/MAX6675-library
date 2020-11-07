@@ -1,5 +1,5 @@
 // this example is public domain. enjoy!
-// www.ladyada.net/learn/sensors/thermocouple
+// https://learn.adafruit.com/thermocouple/
 
 #include "max6675.h"
 
@@ -31,5 +31,6 @@ void loop() {
    Serial.print("F = ");
    Serial.println(MAX6675<thermoCLK, thermoCS, thermoDO>::readFahrenheit());
 
+   // For the MAX6675 to update, you must delay AT LEAST 250ms between reads!
    delay(1000);
 }
