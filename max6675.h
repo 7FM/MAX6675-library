@@ -12,10 +12,13 @@
 
 #include <FastPin.h>
 
+// if enabled the result is represented in Q11.2 format
 #ifdef MAX6675_USE_FIX_PT
 // The upper three bits can not be set so use this as value (with compatibility for signed)
 #define NO_THERMO_VALUE 0b0110000000000000
 #define MAX6675_NO_THERMO(x) ((x) == NO_THERMO_VALUE)
+#define MAX6675_CONVERT_TO_FIX_PT(x) ((int16_t)((x) * 4))
+#define MAX6675_PATCH_MUL(x) ((x) >> 2)
 #else
 #define NO_THERMO_VALUE NAN
 #define MAX6675_NO_THERMO(x) isnan(x)
@@ -100,6 +103,11 @@ class MAX6675 {
 #ifndef MAX6675_USE_FIX_PT
     static inline float readFahrenheit() {
         return readCelsius() * 1.8f + 32;
+    }
+#else
+    static inline uint16_t readFahrenheit() {
+        //TODO 1.8 can not be represented exactly with Q11.2 format...
+        return MAX6675_PATCH_MUL(readCelsius() * MAX6675_CONVERT_TO_FIX_PT(1.8f)) + MAX6675_CONVERT_TO_FIX_PT(32);
     }
 #endif
 };
